@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cloud-Based Vehicle Rental System</title>
+  <meta name="description" content="Cloud-Based Vehicle Rental System Frontend" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#0d6efd;
+      --dark:#06111f;
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --muted:#6c757d;
+      --accent:#ffc107;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Inter',sans-serif;
+      background:var(--bg);
+      color:#1e293b;
+      margin:0;
+    }
+    .navbar{
+      background:rgba(6,17,31,.95)!important;
+      backdrop-filter:blur(12px);
+    }
+    .brand-badge{
+      width:38px;height:38px;border-radius:12px;
+      display:inline-flex;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,#0d6efd,#5b8def);
+      color:#fff;font-weight:800;
+    }
+    .page-section{display:none;min-height:100vh}
+    .active-section{display:block}
+    .hero-section{
+      background:
+        linear-gradient(120deg, rgba(6,17,31,.92), rgba(13,110,253,.72)),
+        url('https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1600&q=80');
+      background-size:cover;
+      background-position:center;
+      min-height:92vh;
+      display:flex;
+      align-items:center;
+      padding:40px 0;
+    }
+    .hero-stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+    }
+    .stat-card{
+      background:rgba(255,255,255,.12);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:18px;
+      padding:18px;
+      text-align:center;
+    }
+    .stat-card h3{font-size:1.4rem;font-weight:800;margin:0 0 4px}
+    .stat-card p{margin:0;color:rgba(255,255,255,.72)}
+    .hero-panel,
+    .auth-card,
+    .booking-card,
+    .payment-card,
+    .detail-card{
+      background:rgba(255,255,255,.96);
+      border-radius:24px;
+      padding:24px;
+      border:1px solid rgba(15,23,42,.06);
+      box-shadow:0 10px 30px rgba(15,23,42,.08);
+    }
+    .section-heading{margin-bottom:24px}
+    .section-heading h2{font-weight:800;margin-bottom:6px}
+    .section-heading p{color:var(--muted);margin:0}
+    .feature-card,.report-card,.dash-card,.vehicle-card{
+      background:var(--card);
+      border-radius:20px;
+      padding:22px;
+      box-shadow:0 10px 30px rgba(15,23,42,.06);
+      border:1px solid rgba(15,23,42,.05);
+      height:100%;
+    }
+    .dash-card.admin{
+      background:linear-gradient(135deg,#0d6efd,#4c8bf5);
+      color:#fff;
+    }
+    .icon-box{
+      width:54px;height:54px;border-radius:16px;
+      display:flex;align-items:center;justify-content:center;
+      background:#eef4ff;font-size:1.5rem;margin-bottom:16px
+    }
+    .auth-wrapper{
+      min-height:90vh;display:flex;align-items:center;justify-content:center;
+      padding:40px 15px;
+    }
+    .auth-card{width:100%;max-width:520px}
+    .vehicle-card{overflow:hidden;padding:0}
+    .vehicle-card img{
+      width:100%;height:220px;object-fit:cover;border-top-left-radius:20px;border-top-right-radius:20px;
+    }
+    .vehicle-body{padding:18px}
+    .vehicle-meta{
+      display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px
+    }
+    .vehicle-price{font-size:1.15rem;font-weight:800;color:var(--primary)}
+    .filter-bar,.booking-card,.payment-card{
+      background:#fff;border-radius:22px;padding:22px;
+      box-shadow:0 10px 30px rgba(15,23,42,.05)
+    }
+    .detail-meta{
+      display:flex;gap:18px;flex-wrap:wrap;margin:18px 0;color:#334155
+    }
+    .payment-summary{
+      background:#f8fafc;border-radius:16px;padding:16px;margin-bottom:18px
+    }
+    .mobile-frame{
+      width:320px;border-radius:34px;background:#111827;padding:12px;margin:auto
+    }
+    .mobile-topbar{
+      height:26px;width:120px;background:#000;border-radius:0 0 16px 16px;margin:0 auto 12px
+    }
+    .mobile-screen{
+      background:#f8fafc;border-radius:26px;min-height:500px;padding:18px
+    }
+    .mobile-card{
+      background:#fff;border-radius:18px;padding:18px;margin-bottom:14px;
+      box-shadow:0 6px 18px rgba(15,23,42,.08);font-weight:600
+    }
+    .footer{
+      background:#06111f;color:#cbd5e1
+    }
+    @media (max-width: 991px){
+      .hero-section{min-height:auto}
+      .hero-stats{grid-template-columns:1fr}
+    }
+    @media (max-width: 576px){
+      .hero-section h1{font-size:2rem}
+      .auth-card,.booking-card,.payment-card,.hero-panel{padding:18px}
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="#" onclick="showPage('home')">
+      <span class="brand-badge">VR</span>
+      <span>Vehicle Rental</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('home')">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('vehicles')">Vehicles</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('customerDashboard')">Customer</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('adminDashboard')">Admin</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('reports')">Reports</a></li>
+        <li class="nav-item ms-lg-2">
+          <button class="btn btn-outline-light btn-sm px-3" onclick="showPage('login')">Login</button>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-warning btn-sm px-3" onclick="showPage('register')">Register</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+  <!-- HOME -->
+  <section id="home" class="page-section active-section">
+    <div class="hero-section">
+      <div class="container">
+        <div class="row align-items-center g-4">
+          <div class="col-lg-6">
+            <span class="badge rounded-pill bg-info-subtle text-info-emphasis mb-3 px-3 py-2">Cloud-Native Vehicle Rental System</span>
+            <h1 class="display-5 fw-bold text-white mb-3">Rent Vehicles Online with Speed, Security, and Simplicity</h1>
+            <p class="lead text-white-50 mb-4">
+              Search, filter, book, pay, and manage rentals through a responsive cloud-ready portal built for academic projects and portfolio demos.
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+              <button class="btn btn-warning btn-lg" onclick="showPage('vehicles')">Browse Vehicles</button>
+              <button class="btn btn-outline-light btn-lg" onclick="showPage('register')">Get Started</button>
+            </div>
+            <div class="hero-stats mt-4">
+              <div class="stat-card">
+                <h3>500+</h3><p>Bookings</p>
+              </div>
+              <div class="stat-card">
+                <h3>24/7</h3><p>Availability</p>
+              </div>
+              <div class="stat-card">
+                <h3>8+</h3><p>Categories</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="hero-panel">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Quick Search</h5>
+                <span class="text-muted small">Find your vehicle instantly</span>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Pickup Location</label>
+                  <input type="text" class="form-control" placeholder="City, Airport, Station">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Category</label>
+                  <select class="form-select">
+                    <option>All</option>
+                    <option>Bike</option>
+                    <option>Scooter</option>
+                    <option>Sedan</option>
+                    <option>SUV</option>
+                    <option>Luxury</option>
+                    <option>Electric Vehicle</option>
+                    <option>Van</option>
+                    <option>Bus</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">From</label>
+                  <input type="date" class="form-control">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">To</label>
+                  <input type="date" class="form-control">
+                </div>
+                <div class="col-12">
+                  <button class="btn btn-primary w-100" onclick="showPage('vehicles')">Search Vehicles</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container py-5">
+      <div class="section-heading">
+        <h2>Why Choose Us</h2>
+        <p>Modern cloud-based features for customers and administrators</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="icon-box">⚡</div>
+            <h5>Fast Booking</h5>
+            <p>Book vehicles in a few clicks with a smooth and responsive interface.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="icon-box">🔒</div>
+            <h5>Secure Access</h5>
+            <p>Role-based login, secure forms, and safe user interactions.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="icon-box">☁️</div>
+            <h5>Cloud Ready</h5>
+            <p>Designed for deployment on AWS with scalable UI architecture.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGIN -->
+  <section id="login" class="page-section">
+    <div class="auth-wrapper">
+      <div class="auth-card">
+        <div class="text-center mb-4">
+          <h2 class="fw-bold">Login</h2>
+          <p class="text-muted mb-0">Access your customer or admin account</p>
+        </div>
+        <form onsubmit="handleLogin(event)">
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" id="loginEmail" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" id="loginPassword" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Role</label>
+            <select id="loginRole" class="form-select">
+              <option value="CUSTOMER">Customer</option>
+              <option value="ADMIN">Admin</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Login</button>
+          <p class="text-center mt-3 mb-0">New user? <a href="#" onclick="showPage('register')">Register here</a></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- REGISTER -->
+  <section id="register" class="page-section">
+    <div class="auth-wrapper">
+      <div class="auth-card">
+        <div class="text-center mb-4">
+          <h2 class="fw-bold">Registration</h2>
+          <p class="text-muted mb-0">Create a new customer account</p>
+        </div>
+        <form onsubmit="handleRegister(event)">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" id="regName" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" id="regEmail" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Phone</label>
+            <input type="text" id="regPhone" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" id="regPassword" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Address</label>
+            <textarea id="regAddress" class="form-control" rows="3"></textarea>
+          </div>
+          <button type="submit" class="btn btn-success w-100">Register</button>
+          <p class="text-center mt-3 mb-0">Already have an account? <a href="#" onclick="showPage('login')">Login here</a></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- VEHICLES -->
+  <section id="vehicles" class="page-section">
+    <div class="container py-5">
+      <div class="section-heading">
+        <h2>Available Vehicles</h2>
+        <p>Search and filter vehicles by category, price, and fuel type</p>
+      </div>
+
+      <div class="filter-bar mb-4">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search vehicle name or brand" oninput="renderVehicles()">
+          </div>
+          <div class="col-md-3">
+            <select id="categoryFilter" class="form-select" onchange="renderVehicles()">
+              <option value="">All Categories</option>
+              <option>Bike</option>
+              <option>Scooter</option>
+              <option>Sedan</option>
+              <option>SUV</option>
+              <option>Luxury</option>
+              <option>Electric Vehicle</option>
+              <option>Van</option>
+              <option>Bus</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <select id="sortFilter" class="form-select" onchange="renderVehicles()">
+              <option value="default">Sort By</option>
+              <option value="priceAsc">Price: Low to High</option>
+              <option value="priceDesc">Price: High to Low</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-outline-primary w-100" onclick="resetFilters()">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4" id="vehicleGrid"></div>
+    </div>
+  </section>
+
+  <!-- VEHICLE DETAILS -->
+  <section id="vehicleDetails" class="page-section">
+    <div class="container py-5">
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-6">
+          <img id="detailImage" src="" alt="Vehicle" class="img-fluid rounded-4 shadow">
+        </div>
+        <div class="col-lg-6">
+          <div class="detail-card">
+            <span id="detailCategory" class="badge bg-primary-subtle text-primary mb-2">Category</span>
+            <h2 id="detailName">Vehicle Name</h2>
+            <p id="detailBrand" class="text-muted">Brand and model</p>
+            <div class="detail-meta">
+              <div><strong id="detailPrice">₹0</strong><span>/day</span></div>
+              <div><span id="detailFuel">Fuel</span></div>
+              <div><span id="detailSeats">Seats</span></div>
+            </div>
+            <hr>
+            <p id="detailDesc">Vehicle description goes here.</p>
+            <div class="d-flex gap-2 flex-wrap">
+              <button class="btn btn-success" onclick="showPage('booking')">Book Now</button>
+              <button class="btn btn-outline-secondary" onclick="showPage('vehicles')">Back to List</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKING -->
+  <section id="booking" class="page-section">
+    <div class="container py-5">
+      <div class="booking-card mx-auto" style="max-width:760px;">
+        <h2 class="mb-2">Booking Page</h2>
+        <p class="text-muted">Fill details to reserve your vehicle</p>
+        <form onsubmit="handleBooking(event)">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Customer Name</label>
+              <input type="text" class="form-control" placeholder="John Doe" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Vehicle</label>
+              <input type="text" class="form-control" id="bookingVehicle" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Start Date</label>
+              <input type="date" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">End Date</label>
+              <input type="date" class="form-control" required>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Pickup Location</label>
+              <input type="text" class="form-control" placeholder="Enter pickup location">
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary w-100">Proceed to Payment</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAYMENT -->
+  <section id="payment" class="page-section">
+    <div class="container py-5">
+      <div class="payment-card mx-auto" style="max-width:640px;">
+        <h2 class="mb-2">Payment Page</h2>
+        <p class="text-muted">Choose your preferred payment method</p>
+        <div class="payment-summary">
+          <p class="mb-2"><strong>Booking ID:</strong> <span id="paymentBookingId">VR-001</span></p>
+          <p class="mb-0"><strong>Amount:</strong> <span id="paymentAmount">₹0</span></p>
+        </div>
+        <form onsubmit="handlePayment(event)">
+          <div class="mb-3">
+            <label class="form-label">Payment Method</label>
+            <select class="form-select" required>
+              <option>UPI</option>
+              <option>Card</option>
+              <option>Net Banking</option>
+              <option>Wallet</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Transaction ID</label>
+            <input type="text" class="form-control" placeholder="Enter transaction reference" required>
+          </div>
+          <button type="submit" class="btn btn-success w-100">Pay Now</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- CUSTOMER DASHBOARD -->
+  <section id="customerDashboard" class="page-section">
+    <div class="container py-5">
+      <div class="section-heading">
+        <h2>Customer Dashboard</h2>
+        <p>Track bookings, invoices, history, and feedback</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-3"><div class="dash-card">My Profile</div></div>
+        <div class="col-md-3"><div class="dash-card">Booking History</div></div>
+        <div class="col-md-3"><div class="dash-card">Invoices</div></div>
+        <div class="col-md-3"><div class="dash-card">Feedback</div></div>
+      </div>
+      <div class="mt-4 table-responsive">
+        <table class="table table-white table-hover align-middle shadow-sm rounded-4 overflow-hidden">
+          <thead class="table-dark">
+            <tr>
+              <th>Booking ID</th>
+              <th>Vehicle</th>
+              <th>Status</th>
+              <th>Amount</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>BK101</td>
+              <td>Hyundai Creta</td>
+              <td><span class="badge bg-success">Confirmed</span></td>
+              <td>₹2400</td>
+              <td><button class="btn btn-sm btn-outline-primary">Download Invoice</button></td>
+            </tr>
+            <tr>
+              <td>BK102</td>
+              <td>Ather 450X</td>
+              <td><span class="badge bg-warning text-dark">Pending</span></td>
+              <td>₹600</td>
+              <td><button class="btn btn-sm btn-outline-danger">Cancel</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADMIN DASHBOARD -->
+  <section id="adminDashboard" class="page-section">
+    <div class="container py-5">
+      <div class="section-heading">
+        <h2>Admin Dashboard</h2>
+        <p>Manage vehicles, customers, bookings, payments, and reports</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-3"><div class="dash-card admin">Add Vehicle</div></div>
+        <div class="col-md-3"><div class="dash-card admin">Update Vehicle</div></div>
+        <div class="col-md-3"><div class="dash-card admin">Manage Bookings</div></div>
+        <div class="col-md-3"><div class="dash-card admin">Manage Payments</div></div>
+      </div>
+      <div class="row g-4 mt-2">
+        <div class="col-md-3"><div class="dash-card">Manage Customers</div></div>
+        <div class="col-md-3"><div class="dash-card">Delete Vehicle</div></div>
+        <div class="col-md-3"><div class="dash-card">Notifications</div></div>
+        <div class="col-md-3"><div class="dash-card">Reports</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPORTS -->
+  <section id="reports" class="page-section">
+    <div class="container py-5">
+      <div class="section-heading">
+        <h2>Reports & Analytics</h2>
+        <p>Sample business reporting dashboard</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4"><div class="report-card"><h5>Daily Revenue</h5><p class="fs-4 fw-bold text-primary">₹12,500</p></div></div>
+        <div class="col-md-4"><div class="report-card"><h5>Monthly Revenue</h5><p class="fs-4 fw-bold text-primary">₹3,45,000</p></div></div>
+        <div class="col-md-4"><div class="report-card"><h5>Most Popular Vehicle</h5><p class="fs-4 fw-bold text-primary">Toyota Innova</p></div></div>
+        <div class="col-md-4"><div class="report-card"><h5>Booking Statistics</h5><p class="fs-4 fw-bold text-primary">128 Confirmed</p></div></div>
+        <div class="col-md-4"><div class="report-card"><h5>Customer Statistics</h5><p class="fs-4 fw-bold text-primary">89 Active Customers</p></div></div>
+        <div class="col-md-4"><div class="report-card"><h5>Payment Reports</h5><p class="fs-4 fw-bold text-primary">100% Success Rate</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOBILE VIEW -->
+  <section id="mobileView" class="page-section">
+    <div class="container py-5 text-center">
+      <div class="section-heading">
+        <h2>Responsive Mobile View</h2>
+        <p>Optimized for phones and tablets</p>
+      </div>
+      <div class="mobile-frame shadow-lg">
+        <div class="mobile-topbar"></div>
+        <div class="mobile-screen">
+          <div class="mobile-card">Search Vehicles</div>
+          <div class="mobile-card">Book Vehicle</div>
+          <div class="mobile-card">Dashboard</div>
+          <div class="mobile-card">Reports</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer py-4">
+  <div class="container text-center">
+    <p class="mb-0">© 2026 Cloud-Based Vehicle Rental System. Built for academic project and portfolio.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const vehicles = [
+    {
+      id: 1,
+      name: "Hyundai Creta",
+      brand: "Hyundai",
+      category: "SUV",
+      fuel: "Petrol",
+      seats: 5,
+      price: 2400,
+      image: "https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&w=1200&q=80",
+      description: "A stylish and comfortable SUV for family trips and city travel."
+    },
+    {
+      id: 2,
+      name: "Royal Enfield Classic 350",
+      brand: "Royal Enfield",
+      category: "Bike",
+      fuel: "Petrol",
+      seats: 2,
+      price: 850,
+      image: "https://images.unsplash.com/photo-1558981852-426c6c22a0e9?auto=format&fit=crop&w=1200&q=80",
+      description: "Powerful cruiser bike for long rides and premium road presence."
+    },
+    {
+      id: 3,
+      name: "Tesla Model 3",
+      brand: "Tesla",
+      category: "Electric Vehicle",
+      fuel: "Electric",
+      seats: 5,
+      price: 5200,
+      image: "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1200&q=80",
+      description: "Premium electric sedan with advanced technology and performance."
+    },
+    {
+      id: 4,
+      name: "Toyota Innova",
+      brand: "Toyota",
+      category: "Van",
+      fuel: "Diesel",
+      seats: 7,
+      price: 3800,
+      image: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1200&q=80",
+      description: "Reliable multi-purpose vehicle ideal for groups and outstation travel."
+    },
+    {
+      id: 5,
+      name: "BMW 7 Series",
+      brand: "BMW",
+      category: "Luxury",
+      fuel: "Petrol",
+      seats: 5,
+      price: 10000,
+      image: "https://images.unsplash.com/photo-1551830820-330a71b99659?auto=format&fit=crop&w=1200&q=80",
+      description: "Luxury limousine for VIP travel and executive rentals."
+    },
+    {
+      id: 6,
+      name: "Ather 450X",
+      brand: "Ather",
+      category: "Scooter",
+      fuel: "Electric",
+      seats: 2,
+      price: 600,
+      image: "https://images.unsplash.com/photo-1618761714954-0b7f9f4b3b40?auto=format&fit=crop&w=1200&q=80",
+      description: "Smart electric scooter for daily commuting with excellent range."
+    }
+  ];
+
+  let selectedVehicle = vehicles[0];
+
+  function showPage(id) {
+    document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active-section'));
+    const target = document.getElementById(id);
+    if (target) target.classList.add('active-section');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (id === 'vehicles') renderVehicles();
+    if (id === 'booking') document.getElementById('bookingVehicle').value = selectedVehicle.name;
+    if (id === 'payment') {
+      document.getElementById('paymentBookingId').innerText = 'BK-' + String(selectedVehicle.id).padStart(3, '0');
+      document.getElementById('paymentAmount').innerText = `₹${selectedVehicle.price}`;
+    }
+  }
+
+  function renderVehicles() {
+    const grid = document.getElementById('vehicleGrid');
+    if (!grid) return;
+
+    const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
+    const category = document.getElementById('categoryFilter')?.value || '';
+    const sort = document.getElementById('sortFilter')?.value || 'default';
+
+    let filtered = vehicles.filter(v => {
+      const matchesSearch = v.name.toLowerCase().includes(search) || v.brand.toLowerCase().includes(search);
+      const matchesCategory = !category || v.category === category;
+      return matchesSearch && matchesCategory;
+    });
+
+    if (sort === 'priceAsc') filtered.sort((a, b) => a.price - b.price);
+    if (sort === 'priceDesc') filtered.sort((a, b) => b.price - a.price);
+
+    grid.innerHTML = filtered.map(v => `
+      <div class="col-md-6 col-lg-4">
+        <div class="vehicle-card">
+          <img src="${v.image}" alt="${v.name}">
+          <div class="vehicle-body">
+            <span class="badge bg-primary-subtle text-primary mb-2">${v.category}</span>
+            <h5 class="mb-1">${v.name}</h5>
+            <p class="text-muted mb-2">${v.brand} • ${v.fuel} • ${v.seats} Seats</p>
+            <p class="mb-3">${v.description}</p>
+            <div class="vehicle-meta">
+              <span class="vehicle-price">₹${v.price}/day</span>
+              <button class="btn btn-primary btn-sm" onclick='openVehicle(${JSON.stringify(v)})'>View Details</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function openVehicle(vehicle) {
+    selectedVehicle = vehicle;
+    document.getElementById('detailImage').src = vehicle.image;
+    document.getElementById('detailCategory').innerText = vehicle.category;
+    document.getElementById('detailName').innerText = vehicle.name;
+    document.getElementById('detailBrand').innerText = `${vehicle.brand} • ${vehicle.fuel}`;
+    document.getElementById('detailPrice').innerText = `₹${vehicle.price}`;
+    document.getElementById('detailFuel').innerText = `Fuel: ${vehicle.fuel}`;
+    document.getElementById('detailSeats').innerText = `Seats: ${vehicle.seats}`;
+    document.getElementById('detailDesc').innerText = vehicle.description;
+    showPage('vehicleDetails');
+  }
+
+  function resetFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('categoryFilter').value = '';
+    document.getElementById('sortFilter').value = 'default';
+    renderVehicles();
+  }
+
+  function handleLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const role = document.getElementById('loginRole').value;
+    alert(`Login attempt for ${email} as ${role}. Connect backend API here.`);
+    showPage(role === 'ADMIN' ? 'adminDashboard' : 'customerDashboard');
+  }
+
+  function handleRegister(event) {
+    event.preventDefault();
+    const name = document.getElementById('regName').value;
+    alert(`Registration submitted for ${name}. Connect backend API here.`);
+    showPage('login');
+  }
+
+  function handleBooking(event) {
+    event.preventDefault();
+    alert(`Booking created for ${selectedVehicle.name}. Proceeding to payment.`);
+    showPage('payment');
+  }
+
+  function handlePayment(event) {
+    event.preventDefault();
+    alert('Payment successful. Invoice can be downloaded after backend integration.');
+    showPage('customerDashboard');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderVehicles();
+    showPage('home');
+  });
+</script>
+</body>
+</html>
